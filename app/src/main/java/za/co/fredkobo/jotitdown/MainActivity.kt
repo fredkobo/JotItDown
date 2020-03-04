@@ -65,12 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getListOfNotes(): List<Note> {
         val noteList = listOf(
-            Note("Fluid Mechanics", "the study of forces and flow within fluids", Date()),
-            Note(
-                "Electrical Engineering",
-                "Electrical engineering is an engineering discipline concerned with the study, design and application of equipment, devices and systems which use electricity, electronics, and electromagnetism.",
-                Date()
-            )
+            Note("123456789","Fluid Mechanics", "the study of forces and flow within fluids", System.currentTimeMillis())
         )
         return noteList;
     }
