@@ -2,7 +2,7 @@ package za.co.fredkobo.jotitdown
 
 import java.util.*
 
-data class Note(val uid:String, val title:String, val body:String, val date: Long) {
+data class Note(val uid:String = "", val title:String = "", val body:String = "", val date: Long = -1L) {
     fun toMap(): Map<String, Any?> {
         return mapOf(
             "uid" to uid,

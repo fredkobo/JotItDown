@@ -2,6 +2,7 @@ package za.co.fredkobo.jotitdown
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -51,7 +52,12 @@ class CreateNoteActivity : AppCompatActivity() {
 
     private fun writeNewPost(note: Note) {
         var ref = database.ref.child("users").child(note.uid).child("notes")
-        ref.setValue(note)
+        var key = database.ref.child("users").child(note.uid).child("notes").push().key
+        if (key != null) {
+            ref.child(key).setValue(note).addOnSuccessListener {
+                Log.d(TAG, "new note add");
+            }
+        }
 
     }
 
