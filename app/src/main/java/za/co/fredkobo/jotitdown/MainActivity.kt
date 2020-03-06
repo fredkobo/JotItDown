@@ -6,42 +6,42 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_note.view.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
-    private val notes = mutableListOf<Note>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        notes.clear()
-
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
+        val initialNoteList = mutableListOf<Note>()
+        notes_recyclerview.layoutManager = LinearLayoutManager(this)
+        notes_recyclerview.adapter = NotesRecyclerAdapter(initialNoteList, this)
+
         getLatestListOfNotes()
 
-        notes_recyclerview.layoutManager = LinearLayoutManager(this)
-        notes_recyclerview.adapter = NotesRecyclerAdapter(notes, this)
     }
 
     private fun getLatestListOfNotes() {
 
+        val notes = mutableListOf<Note>()
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get Post object and use the values to update the UI
-
-                for(child in dataSnapshot.children){
+                notes.clear()
+                for (child in dataSnapshot.children) {
                     val note = child.getValue(Note::class.java)
                     if (note != null) {
                         notes.add(note)
@@ -51,17 +51,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                // ...
             }
         }
 
         val userId = auth.currentUser?.uid
-        if(userId != null) {
+        if (userId != null) {
             var ref = database.ref.child("users").child(userId).child("notes")
             ref.addValueEventListener(postListener)
-
         }
 
     }
@@ -104,18 +101,12 @@ class MainActivity : AppCompatActivity() {
             val tvBody = view.tv_body
         }
 
-        fun updateData(noteList: List<Note>) {
-            this.noteList = noteList;
-            this.notifyDataSetChanged()
+        fun updateData(newNoteList: List<Note>) {
+            val diffResult = DiffUtil.calculateDiff(NotesDiffCallback(this.noteList, newNoteList))
+            diffResult.dispatchUpdatesTo(this)
+            this.noteList = newNoteList;
         }
 
-    }
-
-    private fun getListOfNotes(): List<Note> {
-        val noteList = listOf(
-            Note("123456789","Fluid Mechanics", "the study of forces and flow within fluids", System.currentTimeMillis())
-        )
-        return noteList;
     }
 
     fun addButtonClicked(view: View) {
@@ -123,15 +114,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        // [START auth_sign_out]
         FirebaseAuth.getInstance().signOut()
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
-        // [END auth_sign_out]
     }
 
     companion object {
-
         private const val TAG = "MainActivity"
+    }
+
+    class NotesDiffCallback(var oldList: List<Note>, var newList: List<Note>) :
+        DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val b = oldList[oldItemPosition].id.equals(newList[newItemPosition].id)
+            return b
+        }
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val b = oldList[oldItemPosition] == newList[newItemPosition]
+            return b;
+        }
+
     }
 }

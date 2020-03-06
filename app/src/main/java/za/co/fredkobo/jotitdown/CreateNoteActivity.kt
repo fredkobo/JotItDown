@@ -44,20 +44,25 @@ class CreateNoteActivity : AppCompatActivity() {
 
         val userId = auth.currentUser?.uid
         val date = System.currentTimeMillis();
-        val note = Note(userId!!, title, body, date)
+        val note = Note("", title, body, date)
         writeNewPost(note)
 
         finish()
     }
 
     private fun writeNewPost(note: Note) {
-        var ref = database.ref.child("users").child(note.uid).child("notes")
-        var key = database.ref.child("users").child(note.uid).child("notes").push().key
-        if (key != null) {
-            ref.child(key).setValue(note).addOnSuccessListener {
-                Log.d(TAG, "new note add");
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            var ref = database.ref.child("users").child(userId).child("notes")
+            var key = database.ref.child("users").child(userId).child("notes").push().key
+            if (key != null) {
+                note.id = key
+                ref.child(key).setValue(note).addOnSuccessListener {
+                    Log.d(TAG, "new note add");
+                }
             }
         }
+
 
     }
 
