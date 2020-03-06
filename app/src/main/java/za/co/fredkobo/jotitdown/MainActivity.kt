@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_note.view.*
+import za.co.fredkobo.jotitdown.NoteDetailActivity.Companion.NOTE_KEY
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            var ref = database.ref.child("users").child(userId).child("notes")
+            val ref = database.ref.child("users").child(userId).child("notes")
             ref.addValueEventListener(postListener)
         }
 
@@ -79,6 +79,12 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    fun listItemClicked(note: Note) {
+        val intent = Intent(this, NoteDetailActivity::class.java)
+        intent.putExtra(NOTE_KEY, note)
+        startActivity(intent)
+    }
+
     private class NotesRecyclerAdapter(var noteList: List<Note>, val context: Context) :
         RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder>() {
 
@@ -94,6 +100,12 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
             holder.tvTitle.text = noteList.get(position).title
             holder.tvBody.text = noteList.get(position).body
+
+            holder.itemView.setOnClickListener(View.OnClickListener {
+                if (context is MainActivity) {
+                    context.listItemClicked(noteList[position])
+                }
+            })
         }
 
         class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -102,9 +114,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         fun updateData(newNoteList: List<Note>) {
-            val diffResult = DiffUtil.calculateDiff(NotesDiffCallback(this.noteList, newNoteList))
-            diffResult.dispatchUpdatesTo(this)
             this.noteList = newNoteList;
+            this.notifyDataSetChanged();
         }
 
     }
@@ -123,26 +134,4 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
-    class NotesDiffCallback(var oldList: List<Note>, var newList: List<Note>) :
-        DiffUtil.Callback() {
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val b = oldList[oldItemPosition].id.equals(newList[newItemPosition].id)
-            return b
-        }
-
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val b = oldList[oldItemPosition] == newList[newItemPosition]
-            return b;
-        }
-
-    }
 }
