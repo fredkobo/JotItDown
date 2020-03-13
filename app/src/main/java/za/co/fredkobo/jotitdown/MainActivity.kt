@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+            holder.tvTime.text = formatDate(noteList[position].date)
             holder.tvTitle.text = noteList.get(position).title
             holder.tvBody.text = noteList.get(position).body
 
@@ -109,14 +110,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val tvTime = view.date_time_tv
             val tvTitle = view.tv_title
             val tvBody = view.tv_body
+            val ivAttachment = view.iv_attachment
         }
 
         fun updateData(newNoteList: List<Note>) {
             this.noteList = newNoteList;
             this.notifyDataSetChanged();
         }
+
 
     }
 

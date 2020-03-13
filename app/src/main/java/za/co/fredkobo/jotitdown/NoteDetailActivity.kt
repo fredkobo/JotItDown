@@ -1,10 +1,11 @@
 package za.co.fredkobo.jotitdown
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -14,14 +15,16 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
-    lateinit var note : Note
+    lateinit var note: Note
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_detail)
 
         note = intent.getParcelableExtra<Note>(NOTE_KEY)
-        body_tv.text = note?.body
+        date_time_tv.text = formatDate(note.date)
+        title_tv.text = note.title
+        body_tv.text = note.body
 
         title = note.title
 
@@ -79,5 +82,9 @@ class NoteDetailActivity : AppCompatActivity() {
             val ref = database.ref.child("users").child(userId).child("notes").child(note.id)
             ref.removeValue()
         }
+    }
+
+    fun editButtonClicked(view: View) {
+        editNote()
     }
 }

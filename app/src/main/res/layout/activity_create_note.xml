@@ -4,41 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGrey"
+    android:padding="16dp"
     tools:context=".CreateNoteActivity">
 
     <EditText
         android:id="@+id/title_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title"/>
+        android:hint="Title" />
 
     <EditText
         android:id="@+id/body_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/title_et"
         android:hint="Your text goes here..."
-        android:inputType="textMultiLine"
-        android:layout_below="@+id/title_et"/>
+        android:inputType="textMultiLine" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/discard_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="discardButtonClicked"
-            android:text="Discard" />
+            android:background="@drawable/negative_button_background"
+            android:text="Discard"
+            android:layout_marginEnd="4dp"/>
 
         <Button
             android:id="@+id/save_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/positive_button_background"
             android:onClick="saveButtonClicked"
+            android:layout_marginStart="4dp"
             android:text="Save" />
 
     </LinearLayout>

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGrey"
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:onClick="addButtonClicked"
+        android:tint="@color/colorPrimaryDark"
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="@string/new_note"
         android:layout_margin="16dp" />
