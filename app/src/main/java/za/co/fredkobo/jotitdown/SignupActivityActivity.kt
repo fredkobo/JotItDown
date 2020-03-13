@@ -90,7 +90,7 @@ class SignupActivityActivity : AppCompatActivity() {
             return false
         }
 
-        if (email_addr.length > 6 && password.length > 6 && password.equals(verify_password)) {
+        if (email_addr.length > 3 && password.length >= 6 && password.equals(verify_password)) {
             isValid = true
         }
 
