@@ -31,7 +31,10 @@ class CreateNoteActivity : AppCompatActivity() {
             noteToEdit = intent.getParcelableExtra<Note>(NOTE_KEY)
             title_et.setText(noteToEdit.title)
             body_et.setText(noteToEdit.body)
+            title = "Edit a note"
             isEditActivity = true
+        } else {
+            title = "Compose a new note"
         }
 
         auth = FirebaseAuth.getInstance()

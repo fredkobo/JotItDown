@@ -8,7 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup_activity.*
+import kotlinx.android.synthetic.main.activity_signup_activity.email_et
+import kotlinx.android.synthetic.main.activity_signup_activity.password_et
 
 class LoginActivity : AppCompatActivity() {
 
@@ -55,6 +58,9 @@ class LoginActivity : AppCompatActivity() {
                             baseContext, "Authentication failed.",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        email_et.error = INCORRECT_EMAIL_OR_PASSWORD
+                        password_et.error = INCORRECT_EMAIL_OR_PASSWORD
                         updateUI(null)
                     }
 
@@ -68,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
 
         val email_addr = email_et.text.toString()
         val password = password_et.text.toString()
+
         if (email_addr.length > 3 && password.length >= 6) {
             isvalid = true
         }
@@ -77,5 +84,9 @@ class LoginActivity : AppCompatActivity() {
 
     fun newAccountButtonClicked(view: View) {
         startActivity(Intent(this, SignupActivityActivity::class.java))
+    }
+
+    companion object {
+        private const val INCORRECT_EMAIL_OR_PASSWORD = "Incorrect email or password"
     }
 }

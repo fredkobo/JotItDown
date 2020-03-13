@@ -2,7 +2,9 @@ package za.co.fredkobo.jotitdown
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,11 @@ class SignupActivityActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup_activity)
+
+        val actionbar = supportActionBar
+        actionbar?.setDisplayHomeAsUpEnabled(true)
+        actionbar?.setDisplayShowHomeEnabled(true)
+        title = getString(R.string.create_account)
 
         auth = FirebaseAuth.getInstance()
     }
@@ -47,13 +54,43 @@ class SignupActivityActivity : AppCompatActivity() {
     }
 
     fun validateInputs(): Boolean {
-        var isValid = true
+        var isValid = false
 
         val email_addr = email_et.text.toString()
         val password = password_et.text.toString();
         val verify_password = verify_password_et.text.toString()
 
-        if (email_addr.length > 0 && password.length > 0 && password.equals(verify_password)) {
+        if (TextUtils.isEmpty(email_addr)) {
+            email_et.error = REQUIRED
+            return false
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            password_et.error = REQUIRED
+            return false
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            verify_password_et.error = REQUIRED
+            return false
+        }
+
+        if(!isValidEmailAddress(email_addr)) {
+            email_et.error = ENTER_VALID_EMAIL
+            return false
+        }
+
+        if(password.length < 6) {
+            password_et.error = ENTER_VALID_PASSWORD
+            return false
+        }
+
+        if(!verify_password.equals(password)) {
+            verify_password_et.error = PASSWORDS_MUST_MATCH
+            return false
+        }
+
+        if (email_addr.length > 6 && password.length > 6 && password.equals(verify_password)) {
             isValid = true
         }
 
@@ -91,5 +128,24 @@ class SignupActivityActivity : AppCompatActivity() {
                 // [END_EXCLUDE]
             }
         // [END create_user_with_email]
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUIRED = "Required"
+        private const val ENTER_VALID_EMAIL = "Enter a valid email address"
+        private const val ENTER_VALID_PASSWORD = "Password must be 6 or more characters"
+        private const val PASSWORDS_MUST_MATCH = "This must match your password"
     }
 }

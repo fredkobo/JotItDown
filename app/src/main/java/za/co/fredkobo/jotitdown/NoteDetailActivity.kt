@@ -74,6 +74,7 @@ class NoteDetailActivity : AppCompatActivity() {
         val intent = Intent(this, CreateNoteActivity::class.java);
         intent.putExtra(NOTE_KEY, note)
         startActivity(intent)
+        finish()
     }
 
     private fun deleteNote() {

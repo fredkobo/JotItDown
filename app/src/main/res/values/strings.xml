@@ -4,8 +4,17 @@
     <string name="login">Login</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
-    <string name="create_new_account">Don\'t have an account? Create a new account</string>
+    <string name="create_new_account"><u>Don\'t have an account? Create one</u></string>
     <string name="logout">Logout</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
+    <string name="note_body_hint">Your text goes here...</string>
+    <string name="title">Title</string>
+    <string name="discard">Discard</string>
+    <string name="save">Save</string>
+    <string name="username">Username</string>
+    <string name="email_address">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="create_account">Create account</string>
 </resources>
